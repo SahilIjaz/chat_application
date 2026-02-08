@@ -1,7 +1,17 @@
-export default function Home() {
+async function getHealth() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/`);
+  return res.json();
+}
+
+export default async function Home() {
+  const data = await getHealth();
+
   return (
-    <main className="flex min-h-screen items-center justify-center">
-      <h1 className="text-3xl font-bold text-blue-600"> Omni-Agent Dashboard</h1>
+    <main className="flex min-h-screen flex-col items-center justify-center gap-4">
+      <h1 className="text-3xl font-bold">Omni-Agent Dashboard</h1>
+      <pre className="bg-gray-100 p-4 rounded">
+        {JSON.stringify(data, null, 2)}
+      </pre>
     </main>
   );
 }
