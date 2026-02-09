@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.agents.rag_agent import route_agent  # your agent function
+from app.agents.rag_agent import run_rag_agent as route_agent  # alias to maintain endpoint name
 
 app = FastAPI()
 
