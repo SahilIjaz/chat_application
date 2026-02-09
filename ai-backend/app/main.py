@@ -4,15 +4,27 @@ from app.agents.rag_agent import run_rag_agent as route_agent  # alias to mainta
 
 app = FastAPI()
 
-# Allow your frontend
+# Allow your frontend (local + production)
 origins = [
     "http://localhost:3000",
-    "http://127.0.0.1:3000"
+    "http://127.0.0.1:3000",
+    "http://localhost:8000",  # Local backend
 ]
+
+# Add production Vercel URLs
+import os
+frontend_url = os.getenv("FRONTEND_URL", "")
+if frontend_url:
+    origins.append(frontend_url)
+
+# Allow any Vercel deployment (optional, more permissive)
+origins.extend([
+    "https://*.vercel.app",  # All Vercel deployments
+])
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # frontend URL
+    allow_origins=origins,  # frontend URLs
     allow_credentials=True,
     allow_methods=["*"],    # Allow POST, GET, OPTIONS, etc.
     allow_headers=["*"],
