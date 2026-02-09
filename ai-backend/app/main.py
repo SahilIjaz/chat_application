@@ -1,18 +1,26 @@
 from fastapi import FastAPI
-from app.services.supabase_client import supabase
-from app.rag.ingest import ingest_router
-from agents.router import router as agent_router
+from fastapi.middleware.cors import CORSMiddleware
+from app.agents.rag_agent import route_agent  # your agent function
 
-app = FastAPI(title="Omni-Agent AI Engine")
+app = FastAPI()
 
-@app.get("/")
-def health_check():
-    return {"status": "ok"}
+# Allow your frontend
+origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000"
+]
 
-@app.get("/db-test")
-def db_test():
-    data = supabase.table("documents").select("*").execute()
-    return {"rows": len(data.data)}
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],    # Allow POST, GET, OPTIONS, etc.
+    allow_headers=["*"],
+)
 
-app.include_router(agent_router)
-app.include_router(ingest_router)
+@app.post("/agent/run")
+async def run_agent(payload: dict):
+    message = payload.get("message")
+    user_id = payload.get("user_id", "demo_user")
+    thread_id = payload.get("thread_id", "default_thread")
+    return route_agent(message, user_id, thread_id)
