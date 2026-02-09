@@ -1,37 +1,28 @@
 from fastapi import APIRouter, UploadFile, File
-from fastapi.responses import JSONResponse
+from app.rag.embeddings import embed_text
+from app.services.supabase_client import supabase  # <-- fixed import
 import fitz  # PyMuPDF
-import os
-from app.services.supabase_client import supabase
+import uuid
 
-ingest_router = APIRouter(prefix="/ingest", tags=["ingest"])
-
-UPLOAD_FOLDER = "uploads"
-
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
-
+ingest_router = APIRouter(prefix="/ingest", tags=["Ingest"])
 
 @ingest_router.post("/pdf")
 async def upload_pdf(file: UploadFile = File(...), user_id: str = "demo_user"):
-    file_location = os.path.join(UPLOAD_FOLDER, file.filename)
-    with open(file_location, "wb") as f:
-        f.write(await file.read())
+    pdf_bytes = await file.read()
+    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
 
-    # Read PDF
-    pdf_text = ""
-    doc = fitz.open(file_location)
+    text = ""
     for page in doc:
-        pdf_text += page.get_text()
+        text += page.get_text()
 
-    # Save document metadata in Supabase
-    data = supabase.table("documents").insert(
-        {
-            "name": file.filename,
-            "user_id": user_id
-        }
-    ).execute()
+    embedding = embed_text(text)
 
-    return JSONResponse(
-        {"status": "success", "document_id": data.data[0]["id"], "text_length": len(pdf_text)}
-    )
+    supabase.table("documents").insert({
+        "id": str(uuid.uuid4()),
+        "name": file.filename,
+        "user_id": user_id,
+        "content": text,
+        "embedding": embedding
+    }).execute()
+
+    return {"status": "stored"}
