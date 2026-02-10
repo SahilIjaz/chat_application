@@ -2,8 +2,8 @@
   "version": 2,
   "rewrites": [
     {
-      "source": "/ai-backend/:path*",
-      "destination": "/ai-backend/:path*"
+      "source": "/api/:path*",
+      "destination": "/ai-backend/app/main.py"
     },
     {
       "source": "/(.*)",
