@@ -1,18 +1,7 @@
 {
   "version": 2,
-  "buildCommand": "cd frontend && npm install && npm run build",
-  "devCommand": "npm run dev",
-  "env": [
-    "NEXT_PUBLIC_API_URL"
-  ],
-  "projects": [
-    {
-      "name": "agentflow-frontend",
-      "path": "frontend"
-    },
-    {
-      "name": "agentflow-backend",
-      "path": "api"
-    }
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/:path*" },
+    { "source": "/(.*)", "destination": "/frontend/$1" }
   ]
 }
