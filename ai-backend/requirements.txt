@@ -1,20 +1,13 @@
-# --- Web Server ---
 fastapi==0.115.0
 uvicorn==0.39.0
 python-multipart
 python-dotenv
-
-# --- Database & Storage ---
 supabase==2.27.3
 pydantic==2.12.5
-
-# --- AI & Logic ---
 langchain
 langchain-openai
 langchain-groq
 langgraph
-
-# --- Utility Libraries ---
 requests
 httpx
 PyMuPDF
