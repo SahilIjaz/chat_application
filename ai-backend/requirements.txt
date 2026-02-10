@@ -56,3 +56,19 @@ urllib3==2.6.3
 uvicorn==0.39.0
 websockets==15.0.1
 yarl==1.22.0
+
+
+# --- Existing Dependencies ---
+fastapi==0.115.0
+uvicorn==0.30.6
+supabase==2.27.3
+pydantic==2.12.5
+python-dotenv==1.2.1
+
+# --- Missing Agent & AI Dependencies ---
+langchain==0.3.0
+langchain-community==0.3.0
+langchain-openai==0.2.0
+langchain-groq==0.2.0
+langgraph==0.2.35
+sentence-transformers==3.0.1
